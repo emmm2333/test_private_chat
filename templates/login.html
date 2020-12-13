@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo1-login</title>
+</head>
+<body>
+
+<h3>模拟登录</h3>
+Username: <input type="text" id="username" autocomplete="off">
+<button id="login">Login</button>
+
+</body>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+<script type="text/javascript">
+    var socket = io('http://127.0.0.1:2323');
+    $('#login').click(function () {
+        if ($('#username').val() === ''){
+            alert('用户名不能为空')
+        } else{
+            $.ajax({
+            url: '/login',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                username: $('#username').val(),
+            }),
+            success: function (data) {
+                if (data.code === 200) {
+                    socket.emit('store_sid', {'username': data.username});
+                    window.location = '/chat'
+                }
+            },
+            error: function (data) {
+                console.log(data.code)
+            }
+        })
+        }
+    })
+</script>
+</html>

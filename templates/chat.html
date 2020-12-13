@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo1-chat</title>
+</head>
+<body>
+
+    <h3>模拟转发聊天</h3>
+    <h3>hello, {{ username }}</h3>
+    <a href="/login">重新登录</a><br><br>
+
+    recipient: <input type="text" id="recipient">
+    sender: <input type="text" id="sender">
+    message: <input type="text" id="message">
+    <button id="send">Send</button>
+
+</body>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+
+<script type="text/javascript">
+    var socket = io('http://127.0.0.1:2323');
+
+    $('#send').on('click', function () {
+        socket.emit('new_message', {
+            'recipient': $('#recipient').val(),
+            'sender': $('#sender').val(),
+            'message': $('#message').val()
+        })
+    });
+
+    socket.on('message_resp', function (data) {
+        console.log(data);
+        alert(data.new_message)
+    })
+</script>
+</html>
